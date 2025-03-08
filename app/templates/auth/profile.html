@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Disaster Warning System{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+    <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h2 style="margin-bottom: 2rem;">
+            <span class="emoji-icon">👤</span> Profile
+        </h2>
+        
+        <div style="display: grid; gap: 1.5rem;">
+            <div>
+                <h3 style="margin-bottom: 1rem;">Account Information</h3>
+                <p><strong>Username:</strong> {{ current_user.username }}</p>
+                <p><strong>Email:</strong> {{ current_user.email }}</p>
+                <p><strong>Member since:</strong> {{ current_user.created_at.strftime('%Y-%m-%d') }}</p>
+            </div>
+            
+            <div>
+                <h3 style="margin-bottom: 1rem;">Alert Preferences</h3>
+                <p><strong>Email alerts:</strong> {% if current_user.email_alerts %}Enabled✅{% else %}Disabled❌{% endif %}</p>
+                <p><strong>SMS alerts:</strong> {% if current_user.sms_alerts %}Enabled✅{% else %}Disabled❌{% endif %}</p>
+                <p><strong>Alert radius:</strong> {{ current_user.alert_radius }} km</p>
+            </div>
+            
+            <div>
+                <h3 style="margin-bottom: 1rem;">Location Information</h3>
+                <p><strong>Current location:</strong> {{ current_user.location or 'Not set' }}</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; text-align: center;">
+            <button class="btn btn-primary" onclick="alert('Edit functionality coming soon!')">
+                ✏️ Edit Profile
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %} 

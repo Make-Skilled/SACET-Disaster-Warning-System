@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Alerts{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Active Alerts</h1>
+        <a href="{{ url_for('alerts.create_alert') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create Alert
+        </a>
+    </div>
+
+    <div class="row">
+        {% for alert in alerts %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">{{ alert.title }}</h5>
+                            <span class="badge bg-{{ alert.severity }} me-2">{{ alert.severity }}</span>
+                            <span class="badge bg-secondary">{{ alert.alert_type }}</span>
+                        </div>
+                        <small class="text-muted">{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    
+                    <p class="card-text mt-3">{{ alert.description }}</p>
+                    
+                    <div class="mt-3">
+                        <i class="fas fa-map-marker-alt text-danger"></i>
+                        <span class="ms-1">{{ alert.location }}</span>
+                    </div>
+
+                    {% if alert.alert_type == 'weather' and alert.temperature %}
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <i class="fas fa-thermometer-half"></i>
+                                <span class="ms-2">{{ alert.temperature }}°C</span>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-tint"></i>
+                                <span class="ms-2">{{ alert.humidity }}% Humidity</span>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fas fa-wind"></i>
+                                <span class="ms-2">{{ alert.wind_speed }} km/h</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No active alerts at the moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+}
+
+.bg-low { background-color: #28a745; }
+.bg-medium { background-color: #ffc107; }
+.bg-high { background-color: #fd7e14; }
+.bg-critical { background-color: #dc3545; }
+</style>
+{% endblock %} 

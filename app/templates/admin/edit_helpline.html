@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Helpline{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Helpline</h1>
+        <a href="{{ url_for('admin.helplines') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Helplines
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Helpline Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ helpline.name }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="number" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="number" name="number" value="{{ helpline.number }}" required>
+                    <small class="text-muted">Enter the emergency contact number</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category" required>
+                        <option value="emergency" {% if helpline.category == 'emergency' %}selected{% endif %}>Emergency</option>
+                        <option value="medical" {% if helpline.category == 'medical' %}selected{% endif %}>Medical</option>
+                        <option value="fire" {% if helpline.category == 'fire' %}selected{% endif %}>Fire</option>
+                        <option value="police" {% if helpline.category == 'police' %}selected{% endif %}>Police</option>
+                        <option value="disaster" {% if helpline.category == 'disaster' %}selected{% endif %}>Disaster Management</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ helpline.description }}</textarea>
+                    <small class="text-muted">Provide additional information about the helpline service</small>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if helpline.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="is_active">Active</label>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

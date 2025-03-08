@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Create Alert{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Create New Alert</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('alerts.create_alert') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="mb-3">
+                    <label for="title" class="form-label">Alert Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="alert_type" class="form-label">Alert Type</label>
+                        <select class="form-select" id="alert_type" name="alert_type" required>
+                            <option value="">Select Type</option>
+                            <option value="weather">Weather</option>
+                            <option value="natural">Natural Disaster</option>
+                            <option value="health">Health</option>
+                            <option value="security">Security</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="severity" class="form-label">Severity Level</label>
+                        <select class="form-select" id="severity" name="severity" required>
+                            <option value="">Select Severity</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" required>
+                    <small class="text-muted">Enter city name or coordinates (e.g., "New York" or "40.7128,-74.0060")</small>
+                </div>
+
+                <div class="weather-fields d-none">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="temperature" class="form-label">Temperature (°C)</label>
+                            <input type="number" class="form-control" id="temperature" name="temperature" step="0.1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="humidity" class="form-label">Humidity (%)</label>
+                            <input type="number" class="form-control" id="humidity" name="humidity" min="0" max="100">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="wind_speed" class="form-label">Wind Speed (km/h)</label>
+                            <input type="number" class="form-control" id="wind_speed" name="wind_speed" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ url_for('alerts.alerts') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create Alert</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const alertTypeSelect = document.getElementById('alert_type');
+    const weatherFields = document.querySelector('.weather-fields');
+    const locationInput = document.getElementById('location');
+
+    alertTypeSelect.addEventListener('change', function() {
+        if (this.value === 'weather') {
+            weatherFields.classList.remove('d-none');
+            fetchWeatherData();
+        } else {
+            weatherFields.classList.add('d-none');
+        }
+    });
+
+    locationInput.addEventListener('change', function() {
+        if (alertTypeSelect.value === 'weather') {
+            fetchWeatherData();
+        }
+    });
+
+    function fetchWeatherData() {
+        const location = locationInput.value;
+        if (!location) return;
+
+        fetch(`/api/weather?location=${encodeURIComponent(location)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                    return;
+                }
+                document.getElementById('temperature').value = data.temperature;
+                document.getElementById('humidity').value = data.humidity;
+                document.getElementById('wind_speed').value = data.wind_speed;
+            })
+            .catch(error => console.error('Error fetching weather data:', error));
+    }
+});
+</script>
+{% endblock %}
+{% endblock %} 
